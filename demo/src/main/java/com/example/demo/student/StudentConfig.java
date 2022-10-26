@@ -6,6 +6,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Configuration
 public class StudentConfig {
@@ -26,6 +27,9 @@ public class StudentConfig {
                     LocalDate.of(2000, 02, 03));
 
             repository.saveAll(List.of(Furkan, Muhammet,ahmet2));
+
+            Optional<Student> optionalStudent= repository.findStudentsByName(Furkan.getName());
+            System.out.println(optionalStudent.isPresent());
         };
 
     }

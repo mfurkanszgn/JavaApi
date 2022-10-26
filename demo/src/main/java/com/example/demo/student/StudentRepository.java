@@ -3,6 +3,7 @@ package com.example.demo.student;
 import org.hibernate.sql.Select;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -11,6 +12,9 @@ import java.util.Optional;
 @Repository
 public interface StudentRepository  extends JpaRepository<Student,Long> {
 
-   // @Query("SELECT s FROM Student s where s.email = ?1")
-    Optional<Student> findStudentsByEmail(String email);
+    @Query(value = "select * from student where email= :Email",
+    nativeQuery = true)
+    Optional<Student> findStudentsByEmail(@Param("Email") String email);
+
+    Optional<Student> findStudentsByName(String name);
 }
