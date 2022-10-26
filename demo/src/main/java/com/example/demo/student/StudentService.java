@@ -22,13 +22,11 @@ public class StudentService {
     }
 
     public void addNewStudent(Student student) {
-        Optional<Student> studentOptional =
-                studentRepository.findStudentsByEmail(student.getEmail());
-        if (studentOptional.isPresent()) {
-
+        Boolean existsEmail = studentRepository
+                .selectExistsEmail(student.getEmail());
+        if (existsEmail) {
             throw new IllegalArgumentException("email taken");
         }
-        System.out.println(student);
         studentRepository.save(student);
     }
 
@@ -37,9 +35,7 @@ public class StudentService {
         {
             boolean exist = studentRepository.existsById(studentId);
             if (!exist) {
-                throw new IllegalArgumentException("student id " + studentId + " not exist");
-
-
+                throw new IllegalArgumentException("student id  not exist");
             }
             studentRepository.deleteById(studentId);
         }

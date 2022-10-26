@@ -10,15 +10,21 @@ import org.springframework.boot.jdbc.EmbeddedDatabaseConnection;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.expression.spel.ast.FunctionReference;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 
-@DataJpaTest
+@DataJpaTest(
+        properties = {
+                "spring.jpa.properties.javax.persistence.validation.mode=none"
+        }
+)
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 class StudentRepositoryTest {
     @Autowired
@@ -35,13 +41,37 @@ class StudentRepositoryTest {
 
         Optional<Student> optionalStudent = underTest.findStudentsByEmail(student.getEmail());
         assertThat(optionalStudent).isPresent()
-                .hasValueSatisfying(c->{
+                .hasValueSatisfying(c -> {
                     assertThat(c.getId()).isEqualTo(student.getId());
                     assertThat(c.getName()).isEqualTo(student.getName());
                     assertThat(c.getAge()).isEqualTo(student.getAge());
-                    assertThat(c).isEqualToComparingFieldByField(student);
+
 
                 });
+    }
+    @Test
+    public void itShouldCheckFindStudentByEmail(){
+        //given
+        Student student = new Student("Furkan", "Furkan.sez@gmail.com", LocalDate.of(2000, 02, 03));
+        underTest.save(student);
+        //when
+        boolean exist= underTest.findStudentsByEmail("Furkan.sez@gmail.com").isPresent();
+        //then
+        //System.out.println(exist);
+        assertThat(exist).isTrue();
 
     }
+    @Test
+    public void itShouldCheckFindStudentByEmailNotExist(){
+        //given
+        Student student = new Student("Furkan", "Furkan.sez@gmail.com", LocalDate.of(2000, 02, 03));
+
+        //when
+        boolean exist= underTest.findStudentsByEmail("Furkan.sez@gmail.com").isPresent();
+        //then
+
+        assertThat(exist).isFalse();
+
+    }
+
 }

@@ -15,6 +15,12 @@ public interface StudentRepository  extends JpaRepository<Student,Long> {
     @Query(value = "select * from student where email= :Email",
     nativeQuery = true)
     Optional<Student> findStudentsByEmail(@Param("Email") String email);
-
+    @Query("" +
+            "SELECT CASE WHEN COUNT(s) > 0 THEN " +
+            "TRUE ELSE FALSE END " +
+            "FROM Student s " +
+            "WHERE s.email = ?1"
+    )
+    Boolean selectExistsEmail(String email);
     Optional<Student> findStudentsByName(String name);
 }
