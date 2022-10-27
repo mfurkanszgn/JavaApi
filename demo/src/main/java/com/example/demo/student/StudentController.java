@@ -2,6 +2,7 @@ package com.example.demo.student;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -11,7 +12,10 @@ import java.util.List;
 @RequestMapping(path = "api/v1/student")
 public class StudentController {
 
-    private final StudentService studentService;
+    private  StudentService studentService;
+
+    public StudentController() {
+    }
 
     @Autowired
     public StudentController(StudentService studentService) {
@@ -26,13 +30,14 @@ public class StudentController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public void registerNewStudent(@RequestBody Student student) {
 
         studentService.addNewStudent(student);
-
     }
 
     @DeleteMapping(path = "{studentId}")
+    @ResponseStatus
     public void deleteStudent(
             @PathVariable("studentId") Long studentId) {
         studentService.deleteStudent(studentId);
