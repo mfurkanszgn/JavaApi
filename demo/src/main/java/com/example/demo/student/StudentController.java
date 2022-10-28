@@ -37,7 +37,7 @@ public class StudentController {
     }
 
     @DeleteMapping(path = "{studentId}")
-    @ResponseStatus
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public void deleteStudent(
             @PathVariable("studentId") Long studentId) {
         studentService.deleteStudent(studentId);
@@ -46,8 +46,11 @@ public class StudentController {
     }
 
     @PutMapping(path = "{studentId}")
+    @ResponseStatus(HttpStatus.OK)
     public void updateStudent(@PathVariable("studentId") Long studentId,
+                              @PathVariable("name")
                               @RequestParam(required = false) String name,
+                              @PathVariable("email")
                               @RequestParam(required = false) String email
     ) {
         studentService.updateStudent(studentId, name, email);

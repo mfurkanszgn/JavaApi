@@ -43,7 +43,7 @@ public class StudentService {
     }
 
     @Transactional
-    public void updateStudent(Long studentId, String name, String email) {
+    public Student updateStudent(Long studentId, String name, String email) {
         Student student = studentRepository.findById(studentId).
                 orElseThrow(() -> new IllegalArgumentException(
                         "student not exist"));
@@ -54,10 +54,11 @@ public class StudentService {
             boolean emailExist = studentRepository.selectExistsEmail(email);
             if (emailExist) {
 
-                throw new IllegalArgumentException("email taken");}
+                throw new IllegalArgumentException("email taken");
+            }
             student.setEmail(email);
         }
-
+        return student;
 
 
     }
